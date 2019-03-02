@@ -39,11 +39,10 @@ class MainActivity : AppCompatActivity()
                                       toast("success")
                                   }
 
-                                  onErrorOrExceptionOrNullBody = { _, _, _, _ ->
+                                  onAnyFailure= { _, _, _, _ ->
                                       toast("failure")
                                   }
-                              }
-            )
+                              })
         }
     }
 }

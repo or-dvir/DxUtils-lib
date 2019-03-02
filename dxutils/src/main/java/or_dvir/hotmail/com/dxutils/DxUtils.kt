@@ -22,6 +22,7 @@ import kotlin.math.roundToInt
 typealias retroSuccess<T> = ((originalCall: Call<T>, result: T, requestCode: Int) -> Unit)
 typealias retroErrorCode<T> = ((originalCall: Call<T>, serverErrorCode: Int, requestCode: Int) -> Unit)
 typealias retroException<T> = ((originalCall: Call<T>, exception: Exception, requestCode: Int) -> Unit)
+typealias retroTimeout<T> = ((originalCall: Call<T>, timeoutMillis: Long, requestCode: Int) -> Unit)
 typealias retroErrorOrException<T> = ((originalCall: Call<T>, serverErrorCode: Int?, exception: Exception?, requestCode: Int) -> Unit)
 typealias simpleCallback = () -> Unit
 
@@ -169,26 +170,25 @@ fun AppCompatActivity.createProgressDialog(@StringRes message: Int,
  * note that the actual request is always performed using [Dispatchers.Default]
  * @param call the Retrofit [Call] object
  * @param callback [RetroCallback] a callback to be invoked when the request has finished.
+ * @param timeoutMillis a timeout for the request in milliseconds. default value is 10,000  (10 seconds).
  * @param requestCode Int an optional request code to differentiate between different calls.
- * @return Job the [Job] created by the co-routine if you wish to perform some actions on it (e.g. [Job.cancel]s)
+ * @return the [Job] created by the co-routine, in case you wish to perform some actions on it (e.g. [cancel][Job.cancel])
  */
 fun <T> retroRequestAsync(logTag: String,
                           scope: CoroutineScope,
                           call: Call<T>,
                           callback: RetroCallback<T>,
+                          timeoutMillis: Long = 10_000,
                           requestCode: Int = -1)
         : Job
 {
     return scope.launch {
 
-        //todo consider using withTimeoutOrNull(){} block to define a timeout for retrofit...
-        //todo note that retrofit can already have timeout defined, see how it behaves and decide for yourself
-        //todo which one to use.
-        //todo if you use this, add a timeout listener? (like "onException")
-
         try
         {
-            val response = withContext(Dispatchers.Default) { call.execute() }
+            val response = withTimeout(timeoutMillis) {
+                withContext(Dispatchers.Default) { call.execute() }
+            }
 
             val responseCode = response.code()
             val responseBody = response.body()
@@ -217,15 +217,21 @@ fun <T> retroRequestAsync(logTag: String,
                               "original call was: ${call.request()}")
 
                 callback.onErrorCodeOrNullBody?.invoke(call, responseCode, requestCode)
-                callback.onErrorOrExceptionOrNullBody?.invoke(call, responseCode, null, requestCode)
+                callback.onAnyFailure?.invoke(call, responseCode, null, requestCode)
             }
         }
 
         catch (e: Exception)
         {
             Log.e(logTag, "${e.message}\noriginal call was: ${call.request()}", e)
-            callback.onException?.invoke(call, e, requestCode)
-            callback.onErrorOrExceptionOrNullBody?.invoke(call, null, e, requestCode)
+
+            callback.apply {
+                if(e is TimeoutCancellationException)
+                    onTimeout?.invoke(call, timeoutMillis, requestCode)
+
+                onException?.invoke(call, e, requestCode)
+                onAnyFailure?.invoke(call, null, e, requestCode)
+            }
         }
     }
 }
