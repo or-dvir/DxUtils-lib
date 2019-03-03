@@ -16,9 +16,6 @@ import retrofit2.Call
 import java.util.*
 import kotlin.math.roundToInt
 
-//todo in the gradle file do whatever you need with the "implementation" part
-//todo where it passes the imports to the user app or no... (check easy settings library)
-
 typealias retroSuccess<T> = ((originalCall: Call<T>, result: T, requestCode: Int) -> Unit)
 typealias retroErrorCode<T> = ((originalCall: Call<T>, serverErrorCode: Int, requestCode: Int) -> Unit)
 typealias retroException<T> = ((originalCall: Call<T>, exception: Exception, requestCode: Int) -> Unit)
