@@ -21,6 +21,6 @@ or in your **module's** build.gradle file:
 in your **module's** build.gradle also add:
 
   	dependencies {
-	        implementation 'com.github.or-dvir:DxUtils-lib:dxutils:{latest version}'        
+	        implementation 'com.github.or-dvir.DxUtils-lib:dxutils:{latest version}'        
 	}
 
