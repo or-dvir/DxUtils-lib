@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.or-dvir'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -24,6 +24,10 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -36,8 +40,4 @@ dependencies {
 //    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
-}
-
-repositories {
-    mavenCentral()
 }
