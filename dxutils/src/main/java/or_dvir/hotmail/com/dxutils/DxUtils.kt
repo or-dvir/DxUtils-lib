@@ -37,6 +37,11 @@ fun Int.pxToDp() = this / Resources.getSystem().displayMetrics.density
 fun Float.dpToPx() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
 
 /**
+ * returns TRUE if at least one item in [objects] is not null, or FALSE if all [objects] are null
+ */
+fun atLeastOneNotNull(vararg objects: Any?) = objects.any { it != null }
+
+/**
  * @param context Context
  * @return Int the width of the screen in pixels
  */
