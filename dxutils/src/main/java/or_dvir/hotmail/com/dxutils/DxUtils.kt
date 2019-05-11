@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import kotlinx.coroutines.*
 import retrofit2.Call
 import java.util.*
@@ -36,10 +37,19 @@ fun Int.dpToPx() =  this.toFloat().dpToPx()
 fun Int.pxToDp() = this / Resources.getSystem().displayMetrics.density
 fun Float.dpToPx() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
 
+fun View.makeVisible(){ visibility = View.VISIBLE }
+fun View.makeInvisible(){ visibility = View.INVISIBLE }
+fun View.makeGone(){ visibility = View.GONE }
+
 /**
  * returns TRUE if at least one item in [objects] is not null, or FALSE if all [objects] are null
  */
 fun atLeastOneNotNull(vararg objects: Any?) = objects.any { it != null }
+
+/**
+ * returns TRUE if at least one item in [objects] is null, or FALSE if all [objects] are not null
+ */
+fun atLeastOneNull(vararg objects: Any?) = objects.any { it == null }
 
 /**
  * @param context Context
