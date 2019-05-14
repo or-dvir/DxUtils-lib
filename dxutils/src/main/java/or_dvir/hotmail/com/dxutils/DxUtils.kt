@@ -12,10 +12,12 @@ import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import kotlinx.coroutines.*
 import retrofit2.Call
 import java.util.*
 import kotlin.math.roundToInt
+
 
 typealias retroSuccess<T> = ((originalCall: Call<T>, result: T, requestCode: Int) -> Unit)
 typealias retroErrorCode<T> = ((originalCall: Call<T>, serverErrorCode: Int, requestCode: Int) -> Unit)
@@ -37,9 +39,30 @@ fun Int.dpToPx() =  this.toFloat().dpToPx()
 fun Int.pxToDp() = this / Resources.getSystem().displayMetrics.density
 fun Float.dpToPx() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
 
-fun View.makeVisible(){ visibility = View.VISIBLE }
-fun View.makeInvisible(){ visibility = View.INVISIBLE }
-fun View.makeGone(){ visibility = View.GONE }
+fun View.makeVisible() { visibility = View.VISIBLE }
+fun View.makeInvisible() { visibility = View.INVISIBLE }
+fun View.makeGone() { visibility = View.GONE }
+fun View.isVisible(): Boolean { return visibility == View.VISIBLE }
+fun View.isInvisible(): Boolean { return visibility == View.INVISIBLE }
+fun View.isGone(): Boolean { return visibility == View.GONE }
+
+/**
+ * @param flag see [InputMethodManager.showSoftInput] for details
+ */
+fun showKeyBoard(view: View, flag: Int)
+{
+    val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    imm?.showSoftInput(view, flag)
+}
+
+/**
+ * @param flag see [InputMethodManager.showSoftInput] for details
+ */
+fun hideKeyBoard(view: View, flag: Int)
+{
+    val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    imm?.hideSoftInputFromWindow(view.windowToken, flag)
+}
 
 /**
  * returns TRUE if at least one item in [objects] is not null, or FALSE if all [objects] are null
