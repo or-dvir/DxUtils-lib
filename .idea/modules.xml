@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DxUtils-lib.iml" filepath="$PROJECT_DIR$/DxUtils-lib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dxutils/dxutils.iml" filepath="$PROJECT_DIR$/dxutils/dxutils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DxUtils-lib.iml" filepath="$PROJECT_DIR$/DxUtils-lib.iml" group="DxUtils-lib" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="DxUtils-lib/app" />
+      <module fileurl="file://$PROJECT_DIR$/dxutils/dxutils.iml" filepath="$PROJECT_DIR$/dxutils/dxutils.iml" group="DxUtils-lib/dxutils" />
     </modules>
   </component>
 </project>
