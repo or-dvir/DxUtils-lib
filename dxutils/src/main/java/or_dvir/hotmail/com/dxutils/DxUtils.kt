@@ -56,7 +56,7 @@ fun showKeyBoard(view: View, flag: Int)
 }
 
 /**
- * @param flag see [InputMethodManager.showSoftInput] for details
+ * @param flag see [InputMethodManager.hideSoftInputFromWindow] for details
  */
 fun hideKeyBoard(view: View, flag: Int)
 {
