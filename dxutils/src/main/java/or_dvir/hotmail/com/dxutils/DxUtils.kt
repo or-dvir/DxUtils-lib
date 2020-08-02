@@ -35,22 +35,46 @@ typealias simpleCallback = () -> Unit
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-fun Int.dpToPx() =  this.toFloat().dpToPx()
+fun Int.dpToPx() = this.toFloat().dpToPx()
 fun Int.pxToDp() = this / Resources.getSystem().displayMetrics.density
 fun Float.dpToPx() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
 
-fun View.makeVisible() { visibility = View.VISIBLE }
-fun View.makeInvisible() { visibility = View.INVISIBLE }
-fun View.makeGone() { visibility = View.GONE }
-fun View.isVisible(): Boolean { return visibility == View.VISIBLE }
-fun View.isInvisible(): Boolean { return visibility == View.INVISIBLE }
-fun View.isGone(): Boolean { return visibility == View.GONE }
+fun View.makeVisibleOrGone(isVisible: Boolean) {
+    if (isVisible) {
+        makeVisible()
+    } else {
+        makeGone()
+    }
+}
+
+fun View.makeVisible() {
+    visibility = View.VISIBLE
+}
+
+fun View.makeInvisible() {
+    visibility = View.INVISIBLE
+}
+
+fun View.makeGone() {
+    visibility = View.GONE
+}
+
+fun View.isVisible(): Boolean {
+    return visibility == View.VISIBLE
+}
+
+fun View.isInvisible(): Boolean {
+    return visibility == View.INVISIBLE
+}
+
+fun View.isGone(): Boolean {
+    return visibility == View.GONE
+}
 
 /**
  * @param flag see [InputMethodManager.showSoftInput] for details
  */
-fun showKeyBoard(view: View, flag: Int)
-{
+fun showKeyBoard(view: View, flag: Int) {
     val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
     imm?.showSoftInput(view, flag)
 }
@@ -58,8 +82,7 @@ fun showKeyBoard(view: View, flag: Int)
 /**
  * @param flag see [InputMethodManager.hideSoftInputFromWindow] for details
  */
-fun hideKeyBoard(view: View, flag: Int)
-{
+fun hideKeyBoard(view: View, flag: Int) {
     val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
     imm?.hideSoftInputFromWindow(view.windowToken, flag)
 }
@@ -79,6 +102,7 @@ fun atLeastOneNull(vararg objects: Any?) = objects.any { it == null }
  * @return Int the width of the screen in pixels
  */
 fun getScreenWidthPx(context: Context) = context.resources.displayMetrics.widthPixels
+
 /**
  * @param context Context
  * @return Int the height of the screen in pixels
@@ -88,21 +112,23 @@ fun getScreenHeightPx(context: Context) = context.resources.displayMetrics.heigh
 /**
  * displays the default back button on this activity's support action bar (if not null)
  */
-fun AppCompatActivity.setHomeUpEnabled(enabled: Boolean) = supportActionBar?.setDisplayHomeAsUpEnabled(enabled)
+fun AppCompatActivity.setHomeUpEnabled(enabled: Boolean) =
+    supportActionBar?.setDisplayHomeAsUpEnabled(enabled)
 
 /**
  * @param requestedPermissions the permissions requested by the app
  * @param grantResults the users' results of allowing/denying [requestedPermissions]
  * @return a list of the denied permissions
  */
-fun getUserDeniedPermissions(requestedPermissions: Array<String>,
-                             grantResults: IntArray)
-        : List<String>
-{
+fun getUserDeniedPermissions(
+    requestedPermissions: Array<String>,
+    grantResults: IntArray
+)
+        : List<String> {
     val denied = ArrayList<String>(requestedPermissions.size)
 
     grantResults.forEachIndexed { index, value ->
-        if(value == PackageManager.PERMISSION_DENIED)
+        if (value == PackageManager.PERMISSION_DENIED)
             denied.add(requestedPermissions[index])
     }
 
@@ -124,22 +150,22 @@ fun getUserDeniedPermissions(requestedPermissions: Array<String>,
  * @param negBtnListener Optional listener to invoke when the negative button is clicked.
  * @param isCancelable Whether or not this [AlertDialog] is cancelable (defaults to FALSE)
  */
-fun AppCompatActivity.showPermissionsRationaleDialog(@StringRes message: Int,
-                                                     posBtnOpenSettings: Boolean,
-                                                     @StringRes posBtnTxt: Int,
-                                                     posBtnListener: simpleCallback? = null,
-                                                     @StringRes negBtnTxt: Int = -1,
-                                                     negBtnListener: simpleCallback? = null,
-                                                     isCancelable: Boolean = false)
-{
+fun AppCompatActivity.showPermissionsRationaleDialog(
+    @StringRes message: Int,
+    posBtnOpenSettings: Boolean,
+    @StringRes posBtnTxt: Int,
+    posBtnListener: simpleCallback? = null,
+    @StringRes negBtnTxt: Int = -1,
+    negBtnListener: simpleCallback? = null,
+    isCancelable: Boolean = false
+) {
     AlertDialog.Builder(this).apply {
         setCancelable(isCancelable)
         setMessage(message)
 
         var posListener = posBtnListener
 
-        if (posBtnOpenSettings)
-        {
+        if (posBtnOpenSettings) {
             posListener = {
                 Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.fromParts("package", packageName, null)
@@ -149,7 +175,7 @@ fun AppCompatActivity.showPermissionsRationaleDialog(@StringRes message: Int,
         }
 
         setPositiveButton(posBtnTxt) { _, _ -> posListener?.invoke() }
-        if(negBtnTxt != -1)
+        if (negBtnTxt != -1)
             setNegativeButton(negBtnTxt) { _, _ -> negBtnListener?.invoke() }
     }.show()
 }
@@ -162,12 +188,13 @@ fun AppCompatActivity.showPermissionsRationaleDialog(@StringRes message: Int,
  * @param onClickListener optional listener to invoked when the (positive) button is clicked.
  * @param isCancelable whether or not this [AlertDialog] is cancelable (defaults to FALSE).
  */
-fun AppCompatActivity.showSimpleDialog(@StringRes message: Int,
-                                       @StringRes btnTxt: Int,
-                                       @StringRes title: Int = -1,
-                                       onClickListener: simpleCallback? = null,
-                                       isCancelable: Boolean = false)
-{
+fun AppCompatActivity.showSimpleDialog(
+    @StringRes message: Int,
+    @StringRes btnTxt: Int,
+    @StringRes title: Int = -1,
+    onClickListener: simpleCallback? = null,
+    isCancelable: Boolean = false
+) {
     AlertDialog.Builder(this).apply {
         if (title != -1)
             setTitle(title)
@@ -185,14 +212,15 @@ fun AppCompatActivity.showSimpleDialog(@StringRes message: Int,
  * @param shouldShow whether or not this [ProgressDialog] should be displayed immediately (defaults to false).
  */
 @Deprecated("The use of ProgressDialog has been deprecated by Google")
-fun AppCompatActivity.createProgressDialog(@StringRes message: Int,
-                                           isCancelable: Boolean = false,
-                                           shouldShow: Boolean = false): ProgressDialog
-{
+fun AppCompatActivity.createProgressDialog(
+    @StringRes message: Int,
+    isCancelable: Boolean = false,
+    shouldShow: Boolean = false
+): ProgressDialog {
     return ProgressDialog(this).apply {
         setCancelable(isCancelable)
         setMessage(getString(message))
-        if(shouldShow)
+        if (shouldShow)
             show()
     }
 }
@@ -209,18 +237,18 @@ fun AppCompatActivity.createProgressDialog(@StringRes message: Int,
  * @param requestCode Int an optional request code to differentiate between different calls.
  * @return the [Job] created by the co-routine, in case you wish to perform some actions on it (e.g. [cancel][Job.cancel])
  */
-fun <T> retroRequestAsync(logTag: String,
-                          scope: CoroutineScope,
-                          call: Call<T>,
-                          callback: RetroCallback<T>,
-                          timeoutMillis: Long = 10_000,
-                          requestCode: Int = -1)
-        : Job
-{
+fun <T> retroRequestAsync(
+    logTag: String,
+    scope: CoroutineScope,
+    call: Call<T>,
+    callback: RetroCallback<T>,
+    timeoutMillis: Long = 10_000,
+    requestCode: Int = -1
+)
+        : Job {
     return scope.launch {
 
-        try
-        {
+        try {
             val response = withTimeout(timeoutMillis) {
                 withContext(Dispatchers.Default) { call.execute() }
             }
@@ -236,32 +264,33 @@ fun <T> retroRequestAsync(logTag: String,
             //NOTE:
             //response.isSuccessful() returns true for all values between 200 and 300!!!
             //HTTP code 200 = OK
-            when
-            {
-                responseCode != 200  -> { errorMessage = response.message() }
-                responseBody == null -> { errorMessage = "server response body was NULL" }
+            when {
+                responseCode != 200 -> {
+                    errorMessage = response.message()
+                }
+                responseBody == null -> {
+                    errorMessage = "server response body was NULL"
+                }
                 //code is 200, and body is not null = success
-                else                 -> callback.onSuccess?.invoke(call, responseBody, requestCode)
+                else -> callback.onSuccess?.invoke(call, responseBody, requestCode)
             }
 
-            if(errorMessage != null)
-            {
-                Log.e(logTag, "server error:\n" +
-                              "server return code: $responseCode\n" +
-                              "error message: $errorMessage\n" +
-                              "original call was: ${call.request()}")
+            if (errorMessage != null) {
+                Log.e(
+                    logTag, "server error:\n" +
+                            "server return code: $responseCode\n" +
+                            "error message: $errorMessage\n" +
+                            "original call was: ${call.request()}"
+                )
 
                 callback.onErrorCodeOrNullBody?.invoke(call, responseCode, requestCode)
                 callback.onAnyFailure?.invoke(call, responseCode, null, requestCode)
             }
-        }
-
-        catch (e: Exception)
-        {
+        } catch (e: Exception) {
             Log.e(logTag, "${e.message}\noriginal call was: ${call.request()}", e)
 
             callback.apply {
-                if(e is TimeoutCancellationException)
+                if (e is TimeoutCancellationException)
                     onTimeout?.invoke(call, timeoutMillis, requestCode)
 
                 onException?.invoke(call, e, requestCode)
