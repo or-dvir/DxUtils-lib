@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/DxUtils-lib.iml" filepath="$PROJECT_DIR$/DxUtils-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/DxUtils-lib.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/DxUtils-lib.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dxutils/DxUtils-lib.dxutils.iml" filepath="$PROJECT_DIR$/.idea/modules/dxutils/DxUtils-lib.dxutils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test/DxUtils-lib.test.iml" filepath="$PROJECT_DIR$/.idea/modules/test/DxUtils-lib.test.iml" />
     </modules>
   </component>
 </project>
