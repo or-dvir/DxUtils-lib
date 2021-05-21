@@ -11,10 +11,71 @@ import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 typealias simpleCallback = () -> Unit
 
+/**
+ * calls [String.lowercase] with the default locale
+ */
+fun String.toLowerCaseDefaultLocale() = this.lowercase(Locale.getDefault())
+
+fun Any?.isNull() = this == null
+fun Any?.isNotNull() = this != null
+
+/**
+ * @return Boolean whether or not at least one object in the given [Iterable] matches the given
+ * predicate
+ */
+inline fun <T> Iterable<T>.atLeastOne(predicate: (T) -> Boolean) = none(predicate).not()
+
+/**
+ * @return Boolean whether or this this object equals any of the given objects
+ */
+fun Any.equalsAnyOf(vararg objects: Any): Boolean {
+    for (obj in objects) {
+        if (this == obj) {
+            return true
+        }
+    }
+
+    return false
+}
+
+/**
+ * @receiver List<String> the source list to check for duplicates
+ * @return Map<String, Int> where the key is the repeated string, and the value is the number of
+ * times it is repeated
+ */
+fun List<String>.getDuplicates(): Map<String, Int> =
+    this.groupingBy { it }.eachCount().filterValues { it > 1 }
+
+/**
+ * checks whether this array of strings contains the given [str], where all strings are trimmed and
+ * case is ignored.
+ * @param skipStr String? an optional string in this array to be ignored by this function
+ * @param str String the string to look for in this array
+ */
+fun Array<String>.containsIgnoreCaseTrimmed(str: String, skipStr: String? = null): Boolean {
+    val inputTrimmed = str.trim()
+    var currentTrimmed: String
+
+    for (it in this) {
+        currentTrimmed = it.trim()
+
+        if (skipStr.isNotNull() && skipStr.equals(currentTrimmed, true)) {
+            continue
+        }
+
+        if (currentTrimmed.equals(inputTrimmed, true)) {
+            return true
+        }
+    }
+
+    return false
+}
 
 fun Int.dpToPx() = this.toFloat().dpToPx()
 fun Int.pxToDp() = this / Resources.getSystem().displayMetrics.density
