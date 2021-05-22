@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
@@ -16,6 +18,28 @@ import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 typealias simpleCallback = () -> Unit
+
+inline fun <reified T : Any> AppCompatActivity.launchActivityForResult(
+    requestCode: Int,
+    options: Bundle? = null,
+    noinline init: Intent.() -> Unit = {}
+) {
+    val intent = newIntent<T>(this)
+    intent.init()
+    startActivityForResult(intent, requestCode, options)
+}
+
+inline fun <reified T : Any> Context.launchActivity(
+    options: Bundle? = null,
+    noinline init: Intent.() -> Unit = {}
+) {
+    val intent = newIntent<T>(this)
+    intent.init()
+    startActivity(intent, options)
+}
+
+inline fun <reified T : Any> newIntent(context: Context): Intent =
+    Intent(context, T::class.java)
 
 /**
  * calls [String.lowercase] with the default locale
