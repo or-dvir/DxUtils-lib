@@ -19,7 +19,7 @@ import kotlin.math.roundToInt
 
 typealias simpleCallback = () -> Unit
 
-inline fun <reified T : Any> AppCompatActivity.launchActivityForResult(
+inline fun <reified T : Any> AppCompatActivity.startActivityForResult(
     requestCode: Int,
     options: Bundle? = null,
     noinline init: Intent.() -> Unit = {}
@@ -29,7 +29,7 @@ inline fun <reified T : Any> AppCompatActivity.launchActivityForResult(
     startActivityForResult(intent, requestCode, options)
 }
 
-inline fun <reified T : Any> Context.launchActivity(
+inline fun <reified T : Any> Context.startActivity(
     options: Bundle? = null,
     noinline init: Intent.() -> Unit = {}
 ) {
